@@ -4,7 +4,6 @@
   Installs ftb-ai-crew (Cursor skills + knowledge) into the current or target repo.
 
 .EXAMPLE
-  # From your other repo (one command, after this repo is on GitHub main):
   irm https://raw.githubusercontent.com/YamiKnigth/ftb-ai-crew/main/install.ps1 | iex
 
 .EXAMPLE
@@ -17,10 +16,15 @@ param(
   [string]$Ref = "main"
 )
 
-$ErrorActionPreference = "Stop"
+# Do NOT use Stop globally: git writes progress to stderr and PowerShell
+# treats that as a terminating NativeCommandError.
+$ErrorActionPreference = "Continue"
 
 if (-not $Target) {
   $Target = (Get-Location).Path
+}
+if (-not (Test-Path -LiteralPath $Target)) {
+  throw "Target path does not exist: $Target"
 }
 $Target = (Resolve-Path -LiteralPath $Target).Path
 
@@ -31,33 +35,52 @@ function Copy-Tree {
   Copy-Item -Path (Join-Path $From "*") -Destination $To -Recurse -Force
 }
 
+function Invoke-Git {
+  param([Parameter(ValueFromRemainingArguments = $true)][string[]]$GitArgs)
+  $prev = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+  try {
+    & git @GitArgs 2>&1 | ForEach-Object {
+      if ($_ -is [System.Management.Automation.ErrorRecord]) {
+        Write-Host $_.Exception.Message
+      } else {
+        Write-Host $_
+      }
+    }
+    if ($LASTEXITCODE -ne 0) {
+      throw "git $($GitArgs -join ' ') failed with exit code $LASTEXITCODE"
+    }
+  } finally {
+    $ErrorActionPreference = $prev
+  }
+}
+
 $temp = Join-Path ([System.IO.Path]::GetTempPath()) ("ftb-ai-crew-" + [guid]::NewGuid().ToString("n"))
 New-Item -ItemType Directory -Force -Path $temp | Out-Null
 
 try {
   Write-Host "Cloning $RepoUrl ($Ref) ..."
-  git clone --depth 1 --branch $Ref $RepoUrl $temp 2>&1 | Out-Host
+  # Clone into an empty-ish folder: git wants the destination either empty or nonexistent.
+  Remove-Item -LiteralPath $temp -Recurse -Force -ErrorAction SilentlyContinue
+  Invoke-Git clone --depth 1 --branch $Ref $RepoUrl $temp
+
+  if (-not (Test-Path -LiteralPath (Join-Path $temp ".cursor\skills"))) {
+    throw "Clone succeeded but .cursor/skills was not found. Check branch/repo contents."
+  }
 
   Write-Host "Installing into: $Target"
 
-  # Skills
   Copy-Tree -From (Join-Path $temp ".cursor\skills") -To (Join-Path $Target ".cursor\skills")
-
-  # Rules (merge)
   Copy-Tree -From (Join-Path $temp ".cursor\rules") -To (Join-Path $Target ".cursor\rules")
-
-  # Knowledge + docs used by skills
   Copy-Tree -From (Join-Path $temp "resources\knowledge") -To (Join-Path $Target "resources\knowledge")
   Copy-Tree -From (Join-Path $temp "resources\docs") -To (Join-Path $Target "resources\docs")
 
-  # Crew entrypoints
   Copy-Item -Force (Join-Path $temp "AGENTS.md") (Join-Path $Target "AGENTS.ftb-ai-crew.md")
   New-Item -ItemType Directory -Force -Path (Join-Path $Target "plans") | Out-Null
   if (-not (Test-Path (Join-Path $Target "plans\.gitkeep"))) {
     Set-Content -Path (Join-Path $Target "plans\.gitkeep") -Value ""
   }
 
-  # Pointer README for the host repo
   $pointer = @"
 # FTB AI Crew (installed)
 
