@@ -1,0 +1,19 @@
+---
+description: FTB Quest/Server crew — gated workflow and kitchen-sink style bar
+alwaysApply: true
+---
+
+# FTB Crew project rule
+
+This repo is a Cursor **skills + knowledge** pack for FTB Quests and FTB server suite setup.
+
+When the user asks about FTB Quests, misiones, ftbquests, or FTB Chunks/Teams/Essentials/Ranks:
+
+1. Use skill `ftb-quest-crew` for the gated quest workflow
+2. Use skill `ftb-quest-format` when writing/validating quest files
+3. Use skill `ftb-server-suite` for server configuration advice
+4. Follow gates strictly: recommend → user selects → chapter plan per mod → user approves 100% → only then generate
+5. Match `resources/knowledge/questcraft/kitchen-sink-style.md` for structure/design/style/rewards
+6. Do not require external API keys or a Python CLI
+7. Always include `en_us` + identical `es_es`/`es_mx` for generated quest text
+8. Original prose only — never copy third-party commercial quest wording

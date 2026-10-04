@@ -1,0 +1,23 @@
+# OS / IDE
+Thumbs.db
+Desktop.ini
+.DS_Store
+.idea/
+
+# Env / secrets
+.env
+.env.*
+
+# Generated plans/output (optional local)
+output/
+
+# Third-party quest dumps (do not keep)
+resources/examples/
+
+# Python leftovers if any
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+_archive/
