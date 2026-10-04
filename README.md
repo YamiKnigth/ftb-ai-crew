@@ -17,8 +17,7 @@ La estructura, diseño, estilo didáctico y disciplina de rewards deben seguir l
 Desde la raíz del otro proyecto (Windows / PowerShell):
 
 ```powershell
-# Bust CDN cache if an old script was fetched before:
-irm "https://raw.githubusercontent.com/YamiKnigth/ftb-ai-crew/main/install.ps1?v=2" | iex
+irm https://raw.githubusercontent.com/YamiKnigth/ftb-ai-crew/main/install-oasis.ps1 | iex
 ```
 
 Linux / macOS / Git Bash:
