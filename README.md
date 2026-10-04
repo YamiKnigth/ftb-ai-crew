@@ -26,7 +26,17 @@ Linux / macOS / Git Bash:
 curl -fsSL https://raw.githubusercontent.com/YamiKnigth/ftb-ai-crew/main/install.sh | bash
 ```
 
-Eso copia skills (`.cursor/skills`), rules, knowledge y deja `FTB-AI-CREW.md` + `plans/`.
+Eso copia skills (con **references/** embebidas: estilo, plantillas, ejemplos), rules, knowledge y deja `FTB-AI-CREW.md` + `plans/`.
+
+Los lineamientos viven dentro de:
+
+```
+.cursor/skills/ftb-quest-crew/references/
+.cursor/skills/ftb-quest-format/references/
+.cursor/skills/ftb-server-suite/references/
+```
+
+Si ya habías instalado una versión corta, vuelve a correr el instalador para actualizar.
 
 ## Cómo usarlo
 

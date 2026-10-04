@@ -74,7 +74,14 @@ In Cursor: "Usa ftb-quest-crew: analiza este modpack y recomienda mods para misi
 "@ | Set-Content -Path (Join-Path $Target 'FTB-AI-CREW.md') -Encoding UTF8
 
   Write-Host ""
-  Write-Host "Done. Installed into $Target"
+  $crewRefs = Join-Path $Target '.cursor\skills\ftb-quest-crew\references'
+if (-not (Test-Path -LiteralPath $crewRefs)) {
+  throw "Install incomplete: missing $crewRefs"
+}
+$refCount = (Get-ChildItem -LiteralPath $crewRefs -File).Count
+Write-Host ""
+Write-Host "Done. Installed into $Target"
+Write-Host "ftb-quest-crew references bundled: $refCount files"
 }
 finally {
   if (Test-Path -LiteralPath $work) {

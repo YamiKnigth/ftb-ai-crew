@@ -1,23 +1,27 @@
 ---
 name: ftb-quest-format
 description: >-
-  Emits and validates FTB Quests file formats (SNBT vs JSON5), chapter/lang
-  layout, reward tables, and migration rules. Use when writing ftbquests files,
-  choosing .snbt or .json5, migrating quest packs, or fixing quest book structure.
+  Emits and validates FTB Quests SNBT/JSON5 packs: data, chapter_groups,
+  chapters, reward tables, and lang files. Use when writing ftbquests files,
+  choosing .snbt vs .json5, migrating quest packs, or fixing quest structure.
 ---
 
 # FTB Quest Format
+
+## MUST READ
+
+1. [references/snbt-vs-json5.md](references/snbt-vs-json5.md)  
+2. [references/quests.md](references/quests.md) — tasks/rewards/commands overview  
+3. Sibling skill samples: `../ftb-quest-crew/references/examples-emit-snippets.md`  
 
 ## Format choice
 
 | Target | Files |
 |---|---|
 | MC 1.21.1 and earlier | `.snbt` |
-| MC 26.1+ / modern FTB Library lineage | `.json5` |
+| MC 26.1+ | `.json5` |
 
-Detect from instance metadata + `ftb-quests` jar when possible. If existing files disagree with target, migrate SNBT → JSON5 only when target is JSON5.
-
-Full notes: [../../../resources/docs/format/snbt-vs-json5.md](../../../resources/docs/format/snbt-vs-json5.md)
+Detect from instance metadata / jars / existing quest files. Migrate SNBT→JSON5 only when target is JSON5.
 
 ## Pack layout
 
@@ -31,31 +35,32 @@ config/ftbquests/quests/
   lang/<locale>/chapters/<filename>.(snbt|json5)
 ```
 
-## Separation of concerns
+## Rules
 
-- **Chapter files**: ids, x/y, dependencies, tasks, rewards, shapes — not long prose
-- **Lang files**: `quest.<ID>.title`, `quest.<ID>.quest_subtitle`, `quest.<ID>.quest_desc`, chapter/group titles
+- Chapter files: ids, x/y, deps, tasks, rewards, shapes — not long prose  
+- Lang files: `quest.<ID>.title|quest_subtitle|quest_desc`  
+- Required locales for this crew: `en_us`, `es_es`, `es_mx` (`es_es` == `es_mx`)  
+- IDs: 16-char uppercase hex  
+- Item stacks: `{ id, count, components? }` on modern packs  
 
-Locales required for this crew: `en_us`, `es_es`, `es_mx` (ES copies identical).
+## Reward types (common)
 
-## IDs
+`item`, `xp`, `xp_levels`, `random`, `loot`, `choice`, `command`, `toast`, `stage`, …
 
-Use 16-char uppercase hex ids for chapters/quests/tasks/rewards (FTB style).
+## Task types (common)
 
-## Task / reward types (common)
+`item`, `checkmark`, `kill`, `dimension`, `biome`, `structure`, `observation`, `advancement`, …
 
-Tasks: `item`, `checkmark`, `kill`, `dimension`, `biome`, `structure`, `observation`, `advancement`, …
+## Validation checklist
 
-Rewards: `item`, `xp`, `xp_levels`, `random`, `loot`, `choice`, `command`, `toast`, `stage`, …
+- [ ] `data` + `chapter_groups` exist  
+- [ ] Quest ids unique; all deps resolve; no cycles  
+- [ ] Item ids look like `modid:path`  
+- [ ] Every visible quest has EN+ES title/subtitle/desc  
+- [ ] File extension matches format target  
+- [ ] Reward tables referenced by id exist  
 
-## Emit checklist
+## In-game helpers
 
-- [ ] `data` + `chapter_groups` present
-- [ ] Every quest id unique; deps resolve
-- [ ] Item ids look like `modid:path`
-- [ ] Lang keys exist for all visible quests in EN and ES
-- [ ] Extension matches format target
-
-## FTB docs summary
-
-See [../../../resources/docs/ftb-suite/quests.md](../../../resources/docs/ftb-suite/quests.md)
+- `/ftbquests editing_mode true`  
+- `/ftbquests reload` after file edits

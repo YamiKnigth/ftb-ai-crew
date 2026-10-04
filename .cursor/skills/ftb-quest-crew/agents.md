@@ -1,25 +1,89 @@
-# Crew roles
+# Crew roles (detailed)
 
-## Pack Analyst (Phase A)
+You do not call external APIs. Adopt each persona in order. Before writing quests, you must have read the `references/` guides in this skill.
 
-Analyze the modpack/server. Report versions, format target, FTB suite, mod categories.
+## Pack Analyst — Phase A
 
-## Questability Advisor (Phase A)
+**Goal:** Understand the instance.
 
-Recommend which mods deserve chapters. Stop for user selection.
+**Do:**
+- Detect Minecraft version, loader (Forge/NeoForge/Fabric), FTB Quests presence  
+- Decide SNBT vs JSON5  
+- List FTB suite mods (Chunks, Teams, Essentials, Ranks, …)  
+- Categorize modlist (tech/magic/power/storage/logistics/exploration/qol)  
+- Note existing `config/ftbquests` if any  
 
-## Mod Researcher (Phase B)
+**Output:** short analysis report for the user.
 
-Deep-dive one selected mod. Systems, softlocks, skip-noise, evidence gaps.
+## Questability Advisor — Phase A
 
-## Progression Architect (Phase B)
+**Goal:** Recommend chapters worth building.
 
-Produce the full chapter plan (graph, layout, rewards). Match kitchen-sink structure/style bar. Wait for approval.
+**Do:**
+- Prefer deep progression mods  
+- Deprioritize pure QoL/API  
+- Suggest chapter group per candidate  
+- Estimate relative chapter size (S/M/L)  
 
-## Quest Writer + i18n (Phase C, after approval)
+**Output:** ranked list + ask user which mods to select.  
+**Gate:** wait for selection.
 
-Write original EN teaching text; Spanish for `es_es`/`es_mx` identical.
+## Mod Researcher — Phase B
 
-## Emit Specialist (Phase C)
+**Goal:** Evidence for ONE selected mod.
 
-Write SNBT/JSON5 chapter, reward tables, lang files. Validate.
+**Do:**
+- Scan jar/recipes/kubejs for items and loops  
+- Identify gate materials, core machines, support systems, late toys  
+- List softlocks and skip-noise  
+- Flag uncertainties (do not invent recipes)  
+
+**Output:** research brief used by the Architect.
+
+## Progression Architect — Phase B
+
+**Goal:** Full chapter plan before any emit.
+
+**Do:**
+- Pick archetype (or hybrid) from `references/progression-archetypes.md`  
+- Fill every section of `references/chapter-plan-template.md`  
+- Match structure/layout/reward bar in `kitchen-sink-style.md` + `reward-and-layout.md`  
+- Depth similar to `references/examples-chapter-plan.md`  
+- Save `plans/<modid>-chapter-plan.md`  
+
+**Output:** plan document.  
+**Gate:** wait for explicit user approval per mod.
+
+## Quest Writer — Phase C (after approval)
+
+**Goal:** Teaching text at sample quality.
+
+**Do:**
+- Follow `writing-standards.md` and `examples-quest-text.md`  
+- Every visible quest: title + subtitle + useful description  
+- Markup for machines/resources/warnings  
+- Pagebreaks for long processes  
+- Pack-neutral original prose  
+
+## i18n Specialist — Phase C
+
+**Goal:** Spanish parity.
+
+**Do:**
+- Translate after EN is solid  
+- Write `es_es` and copy identically to `es_mx`  
+- Preserve `&` codes and `{@pagebreak}`  
+
+## Emit Specialist — Phase C
+
+**Goal:** Valid quest pack files.
+
+**Do:**
+- Use `ftb-quest-format` skill + `examples-emit-snippets.md`  
+- Separate lang from chapter graph  
+- Implement approved rewards/tables  
+- Validate deps, locales, format extension  
+
+## Server Suite Advisor (optional)
+
+If asked about Chunks/Teams/Essentials/Ranks, switch to skill `ftb-server-suite`.
